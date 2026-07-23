@@ -11,14 +11,16 @@ on:
         type: boolean
         default: true
       namespace:
-        description: 'Kubernetes namespace (default: autosre-default)'
+        description: 'Kubernetes namespace (default: autosre-acme-corp)'
         required: false
         type: string
-        default: autosre-default
+        default: autosre-acme-corp
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: opsrabbit/bear-payment
+  # This is the acme-corp tenant's source repo — build its OWN image (isolated from
+  # opsrabbit/bear-payment) so a merged acme-corp fix can never touch the default tenant.
+  IMAGE_NAME: opsbear/bear-payment
 
 jobs:
   build:
@@ -60,7 +62,7 @@ jobs:
     needs: build
     if: ${{ github.event_name == 'push' || inputs.deploy != false }}
     env:
-      NAMESPACE: ${{ inputs.namespace || 'autosre-default' }}
+      NAMESPACE: ${{ inputs.namespace || 'autosre-acme-corp' }}
       TAG: ${{ needs.build.outputs.short_sha }}
     steps:
     - name: Connect to Tailscale
