@@ -80,9 +80,9 @@ def calculate_latency_factor() -> float:
         # chaos.pool_limit caps usable connections; defaults to pool_size when not configured.
         chaos_pool_limit = chaos.get("pool_limit", pool_size)
         available_slots = pool_size - chaos_pool_limit
-        # Guard against zero divisor — use minimum of 1 slot
+        # Guard against zero division when pool_limit equals pool_size
         if available_slots <= 0:
-            available_slots = 1
+            return 1.0  # Normal operation when no slots are available for chaos
         fee_rate = 1.0 / available_slots
         return fee_rate
 
