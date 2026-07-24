@@ -82,7 +82,7 @@ def calculate_latency_factor() -> float:
         available_slots = pool_size - chaos_pool_limit  # BUG: zero when pool_limit unset (equals pool_size)
         if available_slots <= 0:
             return 1.0  # Avoid division by zero; return normal latency factor
-        fee_rate = 1.0 / available_slots
+        fee_rate = 1.0 / available_slots  # ZeroDivisionError: calculate_latency: zero divisor in fee calculation
         return fee_rate
 
     if pool_size >= 25:
